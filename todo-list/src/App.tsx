@@ -1,119 +1,121 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
-import './App.css'
+import { useEffect, useState } from "react";
+import type { Todo } from "./types/todo";
+import TodoForm from "./components/TodoForm";
+import TodoList from "./components/TodoList";
+import "./App.css";
+
+// API URL without specification to be reused
+const API_URL = "http://localhost:3000/api/todos";
 
 function App() {
-  const [count, setCount] = useState(0)
+  // states for storing all todos, loading indicator when fetching data and handling error messages
+  const [todos, setTodos] = useState<Todo[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+
+  // fetching all todos from the API
+  const fetchTodos = async () => {
+    try {
+      setLoading(true);
+      setError(null); //reset error before new request
+
+      const res = await fetch(API_URL);
+
+      // handle unsuccesful response
+      if (!res.ok) throw new Error("Kunde inte hämta todos");
+      const data: Todo[] = await res.json();
+
+      // update state with the fetched todos
+      setTodos(data);
+    } catch (err) {
+      setError("Något gick fel vid hämtning av todos");
+    } finally {
+      // stop loading when success OR failure
+      setLoading(false);
+    }
+  };
+
+  // run when component mounts
+  useEffect(() => {
+    fetchTodos();
+  }, []);
+
+  // add new todo with POST request
+  const addTodo = async (title: string, description: string) => {
+    try {
+      setError(null);
+
+      const res = await fetch(API_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ title, description, status: "not_started" }), // default status is "not_started"
+      });
+      if (!res.ok) throw new Error("Kunde inte skapa todo");
+      const newTodo: Todo = await res.json();
+
+      // add new todo on top of the list
+      setTodos((prev) => [newTodo, ...prev]);
+    } catch (err) {
+      setError("Något gick fel vid skapandet av todo");
+    }
+  };
+
+  // update status of todo with PUT request
+  const updateStatus = async (id: number, status: Todo["status"]) => {
+    try {
+      setError(null);
+
+      // find the todo to update
+      const todo = todos.find((t) => t.id === id);
+      if (!todo) return;
+
+      const res = await fetch(`${API_URL}/${id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ...todo, status }), // send updated todo with new status
+      });
+      if (!res.ok) throw new Error("Kunde inte uppdatera todo");
+      const updated: Todo = await res.json();
+
+      // replace updated todo in state
+      setTodos((prev) => prev.map((t) => (t.id === id ? updated : t)));
+    } catch (err) {
+      setError("Något gick fel vid uppdateringen av todo");
+    }
+  };
+
+  // delete todo byt ID
+  const deleteTodo = async (id: number) => {
+    try {
+      setError(null);
+
+      const res = await fetch(`${API_URL}/${id}`, { method: "DELETE" });
+      if (!res.ok) throw new Error("Kunde inte ta bort todo");
+
+      // remove deleted todo from state
+      setTodos((prev) => prev.filter((t) => t.id !== id));
+    } catch (err) {
+      setError("Något gick fel vid borttagning av todo");
+    }
+  };
+
 
   return (
     <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.tsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
+      <div className="app">
+        <h1>Att göra lista</h1>
+        {error && <p className="error">{error}</p>}
 
-      <div className="ticks"></div>
+        {/* form component for creating new todos */}
+        <TodoForm onAdd={addTodo} />
 
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
-
-      <div className="ticks"></div>
-      <section id="spacer"></section>
+        {/* render content based on loading state */}
+        {loading ? (
+          <p className="loading">Laddar...</p>
+        ) : (
+          <TodoList todos={todos} onUpdateStatus={updateStatus} onDelete={deleteTodo} />
+        )}
+      </div>
     </>
   )
 }
