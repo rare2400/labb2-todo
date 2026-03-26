@@ -11,7 +11,7 @@ interface Props {
 
 const TodoList = ({ todos, onUpdateStatus, onDelete }: Props) => {
   // render message if no todos exists
-  if (todos.length === 0) return <p>Inget att göra än, lägg till en uppgift att göra!</p>;
+  if (todos.length === 0) return <p className="empty-li-message">Inget att göra än, lägg till en uppgift att göra!</p>;
 
   return (
     <ul className="todo-list">
