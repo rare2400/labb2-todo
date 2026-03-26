@@ -59,6 +59,7 @@ const TodoForm = ({ onAdd }: Props) => {
                     <label>Beskrivning (valfri)</label>
                     {/* controlled textarea for description and show validation error if exists */}
                     <textarea value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Ange beskrivning..." />
+                    <span className="char-count">{description.length}/200</span>
                     {errors.description && <span className="error">{errors.description}</span>}
                 </div>
                 <button className="submit-btn" type="submit">Lägg till</button>
