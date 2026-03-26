@@ -5,7 +5,7 @@ import TodoList from "./components/TodoList";
 import "./App.css";
 
 // API URL without specification to be reused
-const API_URL = "http://localhost:3000/api/todos";
+const API_URL = "https://labb2-backend.onrender.com/api/todos";
 
 function App() {
   // states for storing all todos, loading indicator when fetching data and handling error messages
