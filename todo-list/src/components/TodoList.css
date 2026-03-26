@@ -1,0 +1,11 @@
+.todo-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .empty-li-message {
+    text-align: center;
+    color: var(--text-muted);
+    margin-top: 1rem;
+  }
