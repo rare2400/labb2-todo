@@ -1,0 +1,61 @@
+.todo-item {
+  background: var(--white);
+  border-radius: var(--border-radius);
+  padding: 1.2rem 1.5rem;
+  box-shadow: var(--box-shadow);
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.todo-item h3 {
+  font-size: 1rem;
+  margin-bottom: 0.4rem;
+}
+
+.todo-item p {
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+  margin-bottom: 0.5rem;
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 0.25rem 0.7rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
+}
+
+.todo-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  min-width: 140px;
+}
+
+.todo-actions select {
+  padding: 0.5rem;
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  font-size: 0.85rem;
+  font-family: inherit;
+  cursor: pointer;
+  background: var(--white);
+}
+
+.delete-btn {
+  padding: 0.5rem;
+  background-color: var(--white);
+  color: var(--error);
+  border: 1px solid var(--error);
+  border-radius: var(--border-radius);
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.delete-btn:hover {
+  background-color: var(--error);
+  color: var(--white);
+}
