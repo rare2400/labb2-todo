@@ -3,6 +3,8 @@
 En applikation för att skapa en "att göra"-lista, byggd med React och TypeScript som kommunicerar
 med ett REST API för att hantera CRUD-operationer.
 
+**Länk till API:** [https://labb2-backend.onrender.com/api/todos](https://labb2-backend.onrender.com/api/todos)
+
 ## Teknikstack
 - React
 - TypeScript
